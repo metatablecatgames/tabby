@@ -54,7 +54,8 @@ return function(project_module: ModuleScript): Types.Runtime
 		local err = project.Err
 		error(`Failed to load Project: {err.id}:{err.msg}`)
 	end
-
+	
+	project = project.Ok
 	local baseGroup = project.ActiveGroup
 	if baseGroup == "" then
 		error("Project.ActiveGroup cannot be an empty string")
