@@ -3,11 +3,11 @@ return {
 	Creator = "metatablecat",
 
 	Fragments = {
-		welcome = script.Parent.Fragments.WelcomeScreen
+		main = script.Parent.Fragments.Main
 	},
 
 	FragmentGroups = {
-		main = {"welcome"}
+		main = {"main"}
 	},
 
 	ActiveGroup = "main"

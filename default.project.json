@@ -1,6 +1,14 @@
 {
 	"name": "tabby3_defaultProject",
 	"tree": {
-		"$path": "src"
+		"$path": "src",
+
+		"Fragments": {
+			"$className": "Folder"
+		},
+
+		"Project": {
+			"$className": "ModuleScript"
+		}
 	}
 }
