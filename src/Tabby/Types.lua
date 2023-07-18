@@ -3,6 +3,7 @@ export type Map<K, V> = {[K]: V}
 
 --/Fragment.lua
 export type Fragment = {
+	Plugin: Plugin,
 	Script: Script,
 	Connect: (Fragment, name: string, func: (self: Fragment, ...any) -> ()) -> ()
 }

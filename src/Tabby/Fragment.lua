@@ -17,6 +17,7 @@ return function(scriptLinker: Script): Types.Fragment
 	end
 
 	local Fragment = {}
+	Fragment.Plugin = SharedState.Plugin
 	Fragment.Script = scriptLinker
 	Fragment._lifecycles = {}
 	Fragment._extLifecycles = {}
