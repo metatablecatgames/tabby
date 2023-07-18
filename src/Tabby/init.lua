@@ -8,7 +8,6 @@ SharedState.Plugin = Plugin
 local Tabby = {}
 Tabby.Fragment = require(script.Fragment)
 Tabby.Runtime = require(script.Runtime)
-Tabby.Extension = require(script.Extension)
 Tabby.Plugin = Plugin
 
 -- TODO: Insert Corelib globally

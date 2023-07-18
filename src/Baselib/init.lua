@@ -1,14 +1,10 @@
 -- Extension
 -- Linker for the "Internal" export of the Tabby runtime package
 local TabbyRuntime = require(script.Parent.Tabby)
-local corelib_ext = TabbyRuntime.Extension("metatablecat", "tabby-baselib")
-
 local Types = require(script.Types)
 
 local Common = require(script.Common)
-Common.Plugin = corelib_ext.Plugin
-Common.Extension = corelib_ext
-
+Common.Plugin = TabbyRuntime.Plugin
 local Tabby = {}
 
 -- Exports (please keep these ordered)

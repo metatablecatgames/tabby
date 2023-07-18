@@ -4,8 +4,6 @@ type TabbyInputObject = Types.TabbyInputObject
 
 --TODO: Fix this library
 local Common = require(script.Parent.Common)
-local ext = Common.Extension
-
 local Event = require(script.Parent.Event)
 local Input = {}
 
@@ -15,6 +13,8 @@ local MouseObject = Plugin:GetMouse()
 local InputBeganEvent: Types.Event<TabbyInputObject> = Event()
 local InputChangedEvent: Types.Event<TabbyInputObject> = Event()
 local InputEndedEvent: Types.Event<TabbyInputObject> = Event()
+local ActivatedEvent: Types.Event<> = Event()
+local DeactivatedEvent: Types.Event<> = Event()
 
 local Mouse = {
 	Active = Plugin:IsActivatedWithExclusiveMouse(),
@@ -34,15 +34,17 @@ Input.Mouse = Mouse
 Input.InputBegan = InputBeganEvent.Signal
 Input.InputChanged = InputChangedEvent.Signal
 Input.InputEnded = InputEndedEvent.Signal
+Input.Activated = ActivatedEvent.Signal
+Input.Deactivated = DeactivatedEvent.Signal
 
 function Input:Activate()
 	Mouse.Active = true
-	ext:Invoke("Activated")
+	ActivatedEvent:Fire()
 end
 
 function Input:Deactivate()
 	Mouse.Active = false
-	ext:Invoke("Deactivated")
+	DeactivatedEvent:Fire()
 end
 
 Plugin.Deactivation:Connect(function()
