@@ -90,7 +90,8 @@ type ButtonConfig = {
 	Description: string,
 	Icon: string?,
 	ClickableWhenViewportHidden: boolean?,
-	Callback: (button: PluginToolbarButton, toolbar: QtToolbar) -> ()?
+	Callback: (button: PluginToolbarButton, toolbar: QtToolbar) -> ()?,
+	DropdownCallback: (button: PluginToolbarButton, toolbar: QtToolbar) -> ()?,
 }
 
 export type QtMenu = QtInterface<"PluginMenu", PluginMenu> & {

@@ -11,7 +11,8 @@ type ButtonConfig = {
 	Description: string,
 	Icon: string?,
 	ClickableWhenViewportHidden: boolean?,
-	Callback: (PluginToolbarButton, self) -> ()?
+	Callback: (PluginToolbarButton, self) -> ()?,
+	DropdownCallback: (PluginToolbarButton, self) -> ()?,
 }
 
 return function(ID: string): self
@@ -39,8 +40,17 @@ return function(ID: string): self
 			then config.ClickableWhenViewportHidden
 			else false
 		local callback = config.Callback
+		local dropdownCallback = config.DropdownCallback
 
-		local btn = toolbar:CreateButton(id, description, icon, name)
+		local btn
+		if dropdownCallback then
+			btn = toolbar:CreatePopupButton(id, description, icon, name)
+			btn.DropdownClick:Connect(function()
+				dropdownCallback(btn, self)
+			end)
+		else
+			btn = toolbar:CreateButton(id, description, icon, name)
+		end
 		btn.ClickableWhenViewportHidden = clickable
 
 		if callback then
