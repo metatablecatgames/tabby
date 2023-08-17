@@ -37,4 +37,4 @@ return {}
 Refer to Documentation for more info on how to use Tabby!
 
 # Special Thanks
-[Support me for $5+ here](https://github.com/sponsors/metatablecat) and I'll add your profile picture here and in release builds
+[Support me for £3+ here](https://github.com/sponsors/metatablecat) and I'll add your profile picture here and in release builds
