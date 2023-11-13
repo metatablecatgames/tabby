@@ -52,7 +52,7 @@ return function(project_module: ModuleScript): Types.Runtime
 	local project = Project(require(project_module))
 	if not project.IsOk then
 		local err = project.Err
-		error(`Failed to load Project: {err.id}:{err.msg}`)
+		error(`Failed to load Project: {err.id}: {err.msg}`)
 	end
 	
 	project = project.Ok
@@ -74,16 +74,27 @@ return function(project_module: ModuleScript): Types.Runtime
 	end
 
 	function rt:RunFragmentGroup()
+		local unknownFragments = {} -- fixes a bug with priority loading on undefined fragments
+
 		for _, fragment: Types.FragmentModule in self.FragmentGroup do
 			local moduleResult = fragment:LoadNoYield()
-
 			if not moduleResult.IsOk then
 				warn("Failed to load fragment " .. fragment.Module.Name)
 			else
 				for src, fragment in self._NestedFragmentCalls do
 					local slot = self._FragmentScriptSlots[src]
+					if not slot then
+						table.insert(unknownFragments, fragment)
+						warn(`{src.Name} does not have a declared priority, and will be placed last in the priority queue.`)
+						continue
+					end
+
 					self.Fragments[slot] = fragment
 				end
+			end
+
+			for _, fragment in unknownFragments do
+				table.insert(self.Fragments, fragment)
 			end
 
 			self._NestedFragmentCalls = {}

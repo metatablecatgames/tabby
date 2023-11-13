@@ -18,7 +18,7 @@ return function(validKeys: {string}): ResultUnion
 	return setmetatable({_keys = shaped}, {
 		__index = function(self, key)
 			assert(self._keys[key], `Cannot emit ResultUnion {key}`)
-			return function(msg)
+			return function(_, msg)
 				return {
 					id = key,
 					msg = msg
