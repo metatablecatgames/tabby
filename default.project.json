@@ -3,6 +3,10 @@
 	"tree": {
 		"$path": "src",
 
+		"LICENSE": {
+			"$path": "LICENSE.txt"
+		},
+
 		"Fragments": {
 			"$className": "Folder"
 		}
