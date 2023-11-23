@@ -54,60 +54,114 @@ local function handler<I..., O...>(action: Action<I..., O...>, f, ...)
 	return executeThread(coroutine.resume(coThread, ...))
 end
 
---[[
-	Action is a parallel execution class, it can be used to run and manage
-	multiple threads in sequence.
-
-	### Code Example
-	```lua
-	local HttpRequest = Action("HttpRequest", function(req)
-		-- HttpResult is a Result object from Result
-		return HttpResult:FromPcall(HttpService.RequestAsync, HttpResult, req)
-	end)
-
-	HttpRequest:await {
-		Url = "https://www.example.com",
-		Method = "GET"
-	}
-	```
-]]
 return function<I..., O...>(actionName: string, callback: (I...) -> O...): Action<I..., O...>
-	local Action: Action<I..., O...> = {
-		Name = actionName,
-		_signal = callback,
-		_threads = {},
+	--[=[
+		@class Action
 
-		--[[
-			Executes the action and yields the current thread until the action
-			completes or is cancelled
-		]]
-		await = function(self, ...)
-			return handler(self, self._signal, ...)
-		end,
+		Action is a parallel execution class, it can be used to run and manage
+		multiple threads in sequence.
 
-		--[[
-			Cancels all running actions, and resumes any waiting threads. Can be given
-			a custom fail out message
-		]]
-		cancel = function(self, optMsg)
-			for srcThread, coThread in self._threads do
-				task.cancel(coThread)
-				coroutine.resume(srcThread, false, "Cancelled", optMsg or "Thread was cancelled.")
-			end
+		### Code Example
+		```lua
+		local HttpRequest = Action("HttpRequest", function(req)
+			-- HttpResult is a Result object from Result
+			return HttpResult:FromPcall(HttpService.RequestAsync, HttpResult, req)
+		end)
 
-			self._threads = {}
-		end,
+		HttpRequest:await {
+			Url = "https://www.example.com",
+			Method = "GET"
+		}
+		```
+	]=]--
+	local Action = {}
 
-		--[[
-			Executes the action in a seperate thread, but does not yield the currently
-			running thread. Result of action is passed into the callback
-		]]
-		handleAsync = function(self, cb, ...)
-			task.spawn(function(...)
-				cb(self:await(...))
-			end, ...)
-		end,
-	}
+	--[=[
+		@prop Name string
+		@within Action
+		@readonly
 
+		The name assigned to the action at construction.
+	]=]--
+	Action.Name = actionName
+
+	--[=[
+		@prop _signal (I...) -> O...
+		@within Action
+		@readonly
+		@private
+		
+		The internal callback that is used when running the action.
+	]=]--
+	Action._signal = callback
+
+		--[=[
+		@prop _threads {[thread] = thread}
+		@within Action
+		@readonly
+		@private
+		
+		Threads are being paused to wait for a response from the internal function.
+	]=]--
+	Action._threads = {}
+
+	--[=[
+		@method await
+		@within Action
+		@param arguments I... -- A variadic value that is based on the provided callback
+		@return boolean -- Indicates whether the function was successful
+		@return O... -- A variadic return if the function worked, returns a string with the Lua error if not
+
+		Executes the action and yields the current thread until the action
+		completes or is cancelled
+	]=]--
+	function Action.await(
+		self: Action<I..., O...>,
+		...: I...
+	): (boolean, O...)
+		return handler(self, self._signal, ...)
+	end
+
+	--[=[
+		@method cancel
+		@within Action
+		@param optMsg string -- An optional message to pass when cancelling
+
+		Cancels all running actions, and resumes any waiting threads. Can be given
+		a custom fail out message. This function will cause all waiting threads and handlers to return `false, optMsg` or
+		if optMsg is omitted, `false, Thread was cancelled.`
+	]=]--
+	function Action.cancel(
+		self: Action<I..., O...>,
+		optMsg: string?
+	)
+		for srcThread, coThread in self._threads do
+			task.cancel(coThread)
+			coroutine.resume(srcThread, false, "Cancelled", optMsg or "Thread was cancelled.")
+		end
+
+		self._threads = {}
+	end
+
+		--[=[
+		@method handleAsync
+		@within Action
+		@param cb (boolean, O...) -> () -- A handler callback that consumes the result of the async function
+		@param ... I... -- A variadic value that is based on the provided callback
+
+		Runs the action in an asynchronous thread, this function runs when a value is available from the underlying async
+		function.
+	]=]--
+	function Action.handleAsync(
+		self: Action<I..., O...>,
+		cb: (boolean, O...) -> (),
+		...: I...
+	)
+		task.spawn(function(...)
+			cb(self:await(...))
+		end, ...)
+	end
+
+	table.freeze(Action)
 	return Action
 end
