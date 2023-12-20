@@ -1,5 +1,7 @@
 # Tabby 🐈
 
+> See also: [Catwork](https://github.com/metatablecatgames/catwork)
+
 The Cat plugin framework.
 
 ## Installation
