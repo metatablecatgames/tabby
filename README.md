@@ -1,6 +1,10 @@
 # Tabby 🐈
 
-> See also: [Catwork](https://github.com/metatablecatgames/catwork)
+> [!CAUTION]
+> Tabby is obsolete, use [Catwork](https://github.com/metatablecatgames/catwork) instead.
+>
+> If you need a migration module, use [cw-tabby](https://github.com/metatablecatgames/tabby) which ports most Tabby
+> and it's base library logic over to Catwork.
 
 The Cat plugin framework.
 
